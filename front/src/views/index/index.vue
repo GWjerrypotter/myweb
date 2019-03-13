@@ -24,11 +24,9 @@
         <i class="el-icon-arrow-right"></i>
       </router-link>
     </div>
-    
     <div class="bg1">
       <div class="content">
         <el-row :gutter="100">
-          
           <el-col :span="8">
             <div class="grid-content bg-purple">
               <router-link to="/news" class="tonews">
@@ -37,26 +35,35 @@
                 <p class="news_title">123</p>
                 <span class="lm">Learn More<i class="el-icon-arrow-right"></i></span>
               </router-link>
+              <el-table
+                :data="newsData"
+                style="width: 100%">
+                <router-link to="/news1" class="link">
+                  <el-table-column
+                    prop="doc_title">
+                    <template slot-scope="scope">
+                      <router-link to="/news1" class="link">
+                      {{ scope.row.doc_title }}
+                      </router-link>
+                    </template>
+                  </el-table-column>
+                </router-link>
+              </el-table>
             </div>
           </el-col>
           <el-col :span="8">
             <div class="grid-content bg-purple">
               <router-link to="/anns" class="tonews">
-                <div class="bgimg1"></div>
-                <h2>农信新闻</h2>
+                <div class="bgimg2"></div>
+                <h2>农信公告</h2>
                 <p class="news_title">123</p>
                 <span class="lm">Learn More<i class="el-icon-arrow-right"></i></span>
               </router-link>
               <el-table
-                :data="tableData"
+                :data="annsData"
                 style="width: 100%">
                 <el-table-column
-                  prop="doc_title"
-                  width="100">
-                </el-table-column>
-                <el-table-column
-                  prop="publish_time"
-                  width="180">
+                  prop="doc_title">
                 </el-table-column>
               </el-table>
             </div>
@@ -64,11 +71,18 @@
           <el-col :span="8">
             <div class="grid-content bg-purple">
               <router-link to="/others" class="tonews">
-                <div class="bgimg1"></div>
-                <h2>农信新闻</h2>
+                <div class="bgimg3"></div>
+                <h2>农信生活</h2>
                 <p class="news_title">123</p>
                 <span class="lm">Learn More<i class="el-icon-arrow-right"></i></span>
               </router-link>
+              <el-table
+                :data="othersData"
+                style="width: 100%">
+                <el-table-column
+                  prop="doc_title">
+                </el-table-column>
+              </el-table>
             </div>
           </el-col>
         </el-row>
@@ -86,7 +100,7 @@
 </template>
 
 <script>
-import { getBrief } from '@/api/index'
+import { getnewsBrief } from '@/api/index'
 import nav from "../nav/index.vue";
 export default {
   data() {
@@ -97,7 +111,9 @@ export default {
         "https://www.tencent.com/video/bannerbg2.mp4"
       ],
       title: "服务三农，相融共生",
-      tableData: [],
+      newsData: [],
+      annsData: [],
+      othersData: [],
       list1: [],
     };
   },
@@ -109,10 +125,16 @@ export default {
   },
   methods: {
     getbrief() {
-      getBrief().then(response => {
-        console.log(response)
-        this.tableData = response.data.results
-        this.list1 = response.data.results
+      getnewsBrief().then(response => {
+        console.log(response.data.results)
+        const d = response.data.results
+        // 循环list，得到不同类型的文档
+        for (let index = 0; index < d.length; index++) {
+          const element = d[index];
+          element.doc_type.doc_type === '新闻' ? this.newsData.push(element) : 
+          element.doc_type.doc_type === '公告' ? this.annsData.push(element) : 
+          this.othersData.push(element)
+        }
       })
       .catch((err)=>{
             console.log(err);
@@ -123,6 +145,9 @@ export default {
 </script>
 
 <style scope>
+body {
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
 .el-carousel__item h3 {
   color: #475669;
   font-size: 14px;
@@ -150,8 +175,11 @@ h1 {
   color: red
 }
 h2 {
-  left: 100px;
+  color: #fff;
+  top: 15%;
+  left: 15%;
   position: absolute;
+  font-size: 25px;
 }
 .el-col {
   min-width: 300px;
@@ -161,21 +189,25 @@ h2 {
 }
 .tonews {
   width: inherit;
-  height: 300px;
+  height: 230px;
   display: block;
   position: relative;
 }
 .news_title {
-  top: 84px;
+  top: 25%;
+  left: 15%;
   position: absolute;
+  font-size: 18px;
 }
 .lm {
-  bottom: 40px;
+  left: 15%;
+  bottom: 10%;
   position: absolute;
-  color: #ee6a59;
+  color: #fff;
+  font-size: 13px;
 }
 .bg1 {
-  background-image: url(https://demo.budflare.com/streetfood/wp-content/uploads/sites/2/2018/10/sf-3.jpg);
+  background-image: url('../../assets/image/bg2.jpg');
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
@@ -211,9 +243,52 @@ i {
   display: block;
   width: 100%;
   height: 100%;
-  background-image: url(http://www.tencent.com/images/index/news_bg_1.png);
+  cursor: pointer;
+  transition: all 0.6s;
+  -webkit-transition: all 0.6s;
+  background-image: url('../../assets/image/news_bg_1.jpg');
+}
+.bgimg1:hover {
+  transform: scale(1,1.1);
+  -webkit-transform: scale(1,1.1);
+}
+.bgimg2 {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  transition: all 0.6s;
+  -webkit-transition: all 0.6s;
+  background-image: url('../../assets/image/news_bg_2.png');
+}
+.bgimg2:hover {
+  transform: scale(1,1.1);
+  -webkit-transform: scale(1,1.1);
+}
+.bgimg3 {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  transition: all 0.6s;
+  -webkit-transition: all 0.6s;
+  background-image: url('../../assets/image/news_bg_3.png');
+}
+.bgimg3:hover {
+  transform: scale(1,1.1);
+  -webkit-transform: scale(1,1.1);
+}
+.link {
+  width: inherit;
+  height: inherit;
+  display: block;
+  position: relative;
+  color: #606266;
 }
 .el-row {
+  min-width: 1200px;
   margin-bottom: 20px;
   &:last-child {
     margin-bottom: 0;
@@ -221,6 +296,19 @@ i {
 }
 .el-col {
   border-radius: 4px;
+}
+.el-table-column {
+  width: 100%;
+  
+}
+.el-table .cell {
+  font-size: 20px;
+  line-height: 1.5;
+  letter-spacing: 2px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /*截取第三行*/
+  overflow: hidden;
 }
 .bg-purple-dark {
   background: #99a9bf;
@@ -235,6 +323,7 @@ i {
   border-radius: 4px;
   height: 600px;
   min-height: 36px;
+  min-width: 290px;
 }
 .row-bg {
   padding: 10px 0;

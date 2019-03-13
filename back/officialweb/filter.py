@@ -13,4 +13,4 @@ class UsersFilter(django_filters.rest_framework.FilterSet):
 class DocsFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = Docs
-        fields = ['doc_title', 'author', 'doc_content', 'publish_time', 'doc_remark']
+        fields = ['doc_type', 'doc_title', 'author', 'doc_content', 'publish_time', 'doc_remark']

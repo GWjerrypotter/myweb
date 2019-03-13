@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from officialweb.models import Docs
+from officialweb.models import Docs, DocType
 from users.models import Users, DeptMent
 
 
-# class DeptSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = DeptMent
-#         fields = "__all__"
+class DeptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeptMent
+        fields = "__all__"
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,7 +24,14 @@ class UserSerializer(serializers.ModelSerializer):
     #     return user
 
 
+class DoctypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocType
+        fields = "__all__"
+
+
 class DocSerializer(serializers.ModelSerializer):
+    doc_type = DoctypeSerializer()
     publish_time = serializers.DateTimeField(format="%Y-%m-%d", required=False, read_only=True)
 
     class Meta:

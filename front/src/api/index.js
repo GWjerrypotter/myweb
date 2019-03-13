@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getBrief() {
+export function getnewsBrief() {
   return request({
-    url: '/doc/',
+    url: '/doc/?page_size=1000',
     method: 'get',
   })
 }
